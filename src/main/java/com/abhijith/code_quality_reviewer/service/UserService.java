@@ -46,6 +46,7 @@ public class UserService {
          return response==null ? new ResponseEntity<>(toDto(user).toString(), HttpStatus.CREATED):response;
     }
 
+
     private UserDto toDto(User user) {
         UserDto dto = new UserDto();
         dto.setUsername(user.getFullName());
