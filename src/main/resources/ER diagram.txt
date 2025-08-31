@@ -1,0 +1,61 @@
+┌───────────────────────┐        ┌─────────────────────┐
+│        USERS          │        │     PROJECTS        │
+├───────────────────────┤        ├─────────────────────┤
+│ user_id (PK)          │◄───────┤ project_id (PK)     │
+│ full_name             │        │ project_name        │
+│ email (UNIQUE)        │        │ description         │
+│ password              │        │ created_at          │
+│ role (ADMIN/USER)     │        │ user_id (FK)        │─────┐
+│ created_at            │        └─────────────────────┘     │
+└───────────────────────┘                                    │
+                                                             │ 1:N
+                                                             │
+┌───────────────────────────┐                                │
+│       CODE_FILES          │                                │
+├───────────────────────────┤                                │
+│ file_id (PK)              │                                │
+│ file_name                 │                                │
+│ file_path                 │                                │
+│ language                  │                                │
+│ uploaded_at               │                                │
+│ project_id (FK)           │────────────────────────────────┘
+└───────────────────────────┘
+
+┌────────────────────────────┐
+│   ANALYSIS_RESULTS         │
+├────────────────────────────┤
+│ analysis_id (PK)           │
+│ file_id (FK)               │
+│ total_issues               │
+│ severity_score             │
+│ ai_feedback (JSON)         │
+│ created_at                 │
+└────────────────────────────┘
+
+┌──────────────────────────┐
+│        REPORTS           │
+├──────────────────────────┤
+│ report_id (PK)           │
+│ project_id (FK)          │
+│ file_id (FK)             │
+│ overall_score            │
+│ pdf_path                 │
+│ generated_at             │
+└──────────────────────────┘
+
+┌────────────────────────────┐
+│   REFRESH_TOKENS           │
+├────────────────────────────┤
+│ token_id (PK)              │
+│ user_id (FK)               │
+│ refresh_token              │
+│ expiry_date                │
+└────────────────────────────┘
+
+
+
+User (1)───(M) Project (1)───(M) CodeFile (1)───(M) AnalysisResult
+             │
+             └──(M) Report
+
+User (1)───(M) RefreshToken
