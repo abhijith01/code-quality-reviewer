@@ -26,6 +26,15 @@ public class UserController {
         userDto.setPassword(password);
         return userService.createUser(userDto);
     }
+    @PostMapping(value = "/login")
+    public ResponseEntity<String> loginUser(@RequestParam("username") String username,
+                                            @RequestParam("password") String password){
+        ResponseEntity<UserDto> response = userService.loginUser(username,password);
+        if(response.hasBody()) {
+            return new ResponseEntity<>(response.getBody().getUsername(), response.getStatusCode());
+        }
+            return new ResponseEntity<>("invalid username or password",response.getStatusCode());
+    }
 
 
 }
