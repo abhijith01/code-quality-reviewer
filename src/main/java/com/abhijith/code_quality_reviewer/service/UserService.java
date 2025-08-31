@@ -46,6 +46,17 @@ public class UserService {
          return response==null ? new ResponseEntity<>(toDto(user).toString(), HttpStatus.CREATED):response;
     }
 
+    public ResponseEntity<UserDto> loginUser(String username, String password){
+        if(userRepo.findByFullName(username).isPresent()){
+            User user = userRepo.findByFullName(username).get();
+            if(passwordEncoder.matches(password,user.getPassword())){
+                return new ResponseEntity<>(toDto(user),HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
+
+
     private UserDto toDto(User user) {
         UserDto dto = new UserDto();
         dto.setUsername(user.getFullName());
