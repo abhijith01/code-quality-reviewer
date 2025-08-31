@@ -3,11 +3,11 @@ package com.abhijith.code_quality_reviewer.controller;
 import com.abhijith.code_quality_reviewer.dto.UserDto;
 import com.abhijith.code_quality_reviewer.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,29 +17,22 @@ public class UserController {
     private UserService userService;
 
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createUser(@RequestParam("username") String username,
-                                             @RequestParam("email") String email,
-                                             @RequestParam("password") String password) {
-        UserDto userDto = new UserDto();
-        userDto.setUsername(username);
-        userDto.setEmail(email);
-        userDto.setPassword(password);
-        return userService.createUser(userDto);
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        UserDto createdUser = userService.createUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
-    @PostMapping(value = "/login")
-    public ResponseEntity<String> loginUser(@RequestParam("username") String username,
-                                            @RequestParam("password") String password){
-        ResponseEntity<UserDto> response = userService.loginUser(username,password);
-        if(response.hasBody()) {
-            return new ResponseEntity<>(response.getBody().getUsername(), response.getStatusCode());
+
+    // The /login endpoint is REMOVED. Spring Security's formLogin() handles it.
+
+    @GetMapping(value = "/me")
+    public String currentUserName(Principal principal){
+        // This will now work correctly after a successful login!
+        if(principal == null){
+            // This case should not be reachable if security is configured correctly,
+            // as unauthenticated requests will be denied.
+            return "No user logged in...";
         }
-            return new ResponseEntity<>("invalid username or password",response.getStatusCode());
+        System.out.println("Principal: " + principal.toString());
+        return "Currently logged in user: " + principal.getName();
     }
-    @GetMapping(value = "/principal")
-    public String ussername(){
-        String username = Principal.class.getName();
-        return username ;
-    }
-
-
 }
