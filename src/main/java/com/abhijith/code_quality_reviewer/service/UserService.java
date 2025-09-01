@@ -30,11 +30,12 @@ public class UserService {
         }
 
         // 2. Create the user entity
-        User user = new User();
-        user.setFullName(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRole(User.Role.USER);
+        User user = User.builder().
+                fullName(userDto.getUsername()).
+                email(userDto.getEmail()).
+                password(passwordEncoder.encode(userDto.getPassword()))
+                .role(User.Role.USER).build();
+        ;
 
         User savedUser = userRepo.save(user);
 
